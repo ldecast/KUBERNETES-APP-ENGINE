@@ -1,0 +1,35 @@
+select {
+    background-color: rgb(21, 24, 28);
+    border: none;
+    border-radius: 20px;
+    font-size: 18px;
+    height: 40px;
+    margin-left: auto;
+    padding-left: 15px;
+    width: 130px;
+}
+
+.__header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 2.5px solid rgb(21, 24, 28);
+    padding: 15px 20px 15px 20px;
+    background-color: black;
+    display: flex;
+}
+
+.__header>h2 {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+/* #db_selector {
+    display: none;
+} */
+
+@media (max-width: 768px) {
+    .__header>h2 {
+        display: none;
+    }
+}

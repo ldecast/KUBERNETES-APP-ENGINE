@@ -1,0 +1,49 @@
+.stats {
+  flex: 0.78;
+  border-left: 3px solid rgb(21, 24, 28);
+  border-right: 3px solid rgb(21, 24, 28);
+  min-width: auto;
+  overflow: auto;
+  max-width: 880px !important;
+}
+
+.gamer__content {
+  padding: 45px 50px 25px 50px;
+  /* background-color: gray; */
+}
+
+h3 {
+  margin: 20px 0px 0px 20px;
+}
+
+.gamer__table {
+  margin-top: 25px;
+  background-color: rgb(21, 24, 28);
+  padding: 5px 25px 25px 25px;
+  border-radius: 10px;
+  margin-bottom: 60px;
+}
+
+table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 20px 0 20px 0;
+  border-bottom: 1px solid rgb(77, 81, 85);
+  vertical-align: middle;
+}
+
+#player__select {
+  width: fit-content;
+  padding-right: 8px;
+}
+
+@media (max-width: 768px) {
+  .stats {
+    flex: auto;
+  }
+}

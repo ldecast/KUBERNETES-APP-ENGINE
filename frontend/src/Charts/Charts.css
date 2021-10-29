@@ -1,0 +1,43 @@
+.charts {
+  flex: 0.78;
+  border-left: 3px solid rgb(21, 24, 28);
+  border-right: 3px solid rgb(21, 24, 28);
+  min-width: auto;
+  overflow: auto;
+  max-width: 1000px !important;
+}
+
+.flex__container {
+  display: flex;
+  padding: 50px 20px 50px 20px;
+  height: fit-content;
+}
+
+.vrs__container {
+  padding: 25px 25px 12px 25px;
+  background-color: rgb(21, 24, 28);
+  border-radius: 10px;
+  width: 100%;
+}
+
+.vrs__container>h2 {
+  margin-bottom: 15px;
+}
+
+.top__container {
+  padding: 25px;
+  background-color: rgb(21, 24, 28);
+  border-radius: 10px;
+  min-width: 215px;
+  margin-left: 16px;
+}
+
+.top__container>h2 {
+  margin-bottom: 28px;
+}
+
+@media (max-width: 768px) {
+  .charts {
+    flex: auto;
+  }
+}

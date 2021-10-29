@@ -1,0 +1,19 @@
+.notfound {
+    flex: 0.78;
+    text-align: center;
+    margin: 180px auto 0px auto;
+    color: white;
+}
+
+#title {
+    font-size: 125px;
+}
+
+#text {
+    margin: 0;
+    padding: 0;
+}
+
+.notfound>p {
+    margin: 50px;
+}
