@@ -9,21 +9,12 @@ message Request {
     int32 request_number = 4;
 }
 
-message Log {
-    int32 request_number = 1;
-    int32 gameid = 2;
-    string gamename = 3;
-    string winner = 4;
-    int32 players = 5;
-    string worker = 6;
-}
-
 message ServerRequest {
     Request request = 1;
 }
 
 message ServerResponse {
-    Log log = 1;
+    string status = 1;
 }
 
 
