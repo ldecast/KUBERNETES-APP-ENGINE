@@ -36,9 +36,6 @@ func sendRequest(w http.ResponseWriter, r *http.Request) {
 	c := game.NewGameServiceClient(conn)
 
 	reqBody, _ := ioutil.ReadAll(r.Body)
-	// var b bytes.Buffer
-	// b.Write(reqBody)
-	// fmt.Println(b.String())
 	var request RequestBody
 	json.Unmarshal(reqBody, &request)
 

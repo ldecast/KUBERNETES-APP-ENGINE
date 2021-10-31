@@ -108,7 +108,7 @@ func RandomPlayer(game *Request) *ServerResponse {
 	}
 	l := Log{
 		Request_number: int(game.RequestNumber),
-		Gameid:         1,
+		Gameid:         3,
 		Gamename:       "RandomPlayer",
 		Winner:         strconv.Itoa(randomIndex),
 		Players:        int(game.Players),
