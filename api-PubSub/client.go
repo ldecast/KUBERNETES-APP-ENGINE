@@ -32,6 +32,7 @@ func sendRequest(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("did not connect: %s", err)
 	}
 	defer conn.Close()
+	// defer r.Body.Close()
 
 	c := game.NewGameServiceClient(conn)
 

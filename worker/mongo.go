@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -20,33 +19,31 @@ type MongoLog struct {
 	Worker         string `json:"worker"`
 }
 
-func insertMongoLog(l MongoLog) error {
+func connectMongo(ctx context.Context) (*mongo.Collection, error) {
 	/* Connect to my cluster */
 	mongoClient, err := mongo.NewClient(options.Client().ApplyURI(MONGODB_URI))
 	if err != nil {
-		return err
+		return nil, err
 	}
-	ctx := context.Background()
 	err = mongoClient.Connect(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	defer mongoClient.Disconnect(ctx)
+	// defer mongoClient.Disconnect(ctx)
 	if err := mongoClient.Ping(ctx, readpref.Primary()); err != nil {
-		return err
+		return nil, err
 	}
 	db := mongoClient.Database("proyecto2-so1")
 	col := db.Collection("squidgame")
+	return col, nil
+}
+
+func insertMongoLog(l MongoLog, col *mongo.Collection, ctx context.Context) error {
 	_, insertErr := col.InsertOne(ctx, l)
 	if insertErr != nil {
 		return insertErr
-	} /* else {
-		// get the inserted ID string
-		newID := result.InsertedID
-		fmt.Println("InsertOne() newID inserted:", newID)
-		fmt.Println()
-	} */
-	fmt.Println("Mongo ok")
+	}
+	// fmt.Println("Mongo ok")
 
 	return nil
 }
