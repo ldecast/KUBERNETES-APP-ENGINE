@@ -88,7 +88,7 @@ function GamerStats() {
                       stats.map((stat) => {
                         return (
                           <tr key={stat._id} >
-                            <td>&nbsp;&nbsp; {stat.game}</td>
+                            <td>&nbsp;&nbsp; {stat.gameid}</td>
                             <td>&nbsp;{stat.gamename}</td>
                             <td>{"Win"}</td>
                           </tr>

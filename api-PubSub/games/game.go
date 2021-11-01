@@ -58,7 +58,6 @@ func publish(msg Log) error {
 }
 
 func MaxPlayer(game *Request) *ServerResponse {
-	fmt.Println("Max player game!")
 	/* Crear el log */
 	l := Log{
 		Request_number: int(game.RequestNumber),
@@ -77,7 +76,6 @@ func MaxPlayer(game *Request) *ServerResponse {
 }
 
 func MinPlayer(game *Request) *ServerResponse {
-	fmt.Println("Min player game!")
 	/* Crear el log */
 	l := Log{
 		Request_number: int(game.RequestNumber),
@@ -96,7 +94,6 @@ func MinPlayer(game *Request) *ServerResponse {
 }
 
 func RandomPlayer(game *Request) *ServerResponse {
-	fmt.Println("Random player game!")
 	/* Crear el log */
 	randomIndex := rand.Intn(int(game.Players))
 	if randomIndex == 0 {

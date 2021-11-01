@@ -55,7 +55,7 @@ function Homepage() {
                       state.last_games.map((game) => {
                         return (
                           <tr key={game._id}>
-                            <td>&nbsp;&nbsp; {game.game}</td>
+                            <td>&nbsp;&nbsp; {game.gameid}</td>
                             <td>&nbsp;{game.winner}</td>
                             <td>{game.gamename}</td>
                           </tr>
