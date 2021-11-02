@@ -11,7 +11,6 @@ import GamerStats from './GamerStats/GamerStats';
 import Logs from './Logs/Logs';
 import Charts from './Charts/Charts';
 import Redis from './Redis/Redis';
-// import UserStats from './UserStats/UserStats';
 
 function App() {
   return (

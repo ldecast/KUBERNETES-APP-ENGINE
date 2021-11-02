@@ -159,6 +159,7 @@ func doRequest(queue chan Request, worknumber int, done chan bool) {
 	for {
 		k := <-queue
 		// time.Sleep(1 * time.Second)
+		// k.Request_number = request_number
 		req, err := json.Marshal(k)
 		if err != nil {
 			fmt.Println(err)
@@ -185,7 +186,7 @@ func readInput() {
 	fmt.Print("Usac Squid Game >> ")
 	text, _ := reader.ReadString('\n')
 	text = text[:len(text)-1]
-	// test := `rungame --gamename "1 | MaxPlayer | 2 | MinPlayer | 3 | RandomWinner" --players 50 --rungames 25 --concurrence 10 --timeout 0.1m`
+	// test := `rungame --gamename "1 | MaxPlayer | 2 | MinPlayer | 3 | RandomPlayer" --players 50 --rungames 200 --concurrence 10 --timeout 0.1m`
 	processInput(text)
 	generateJsonBodies()
 	generateTraffic()
