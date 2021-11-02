@@ -25,6 +25,9 @@ function Logs() {
 
   useEffect(() => {
     getLogs();
+    return () => {
+      socket.off('log-inserted');
+    }
   }, [])
 
   useEffect(() => {
@@ -60,7 +63,7 @@ function Logs() {
                         return (
                           <tr key={i}>
                             <td>&nbsp;&nbsp; {log.request_number}</td>
-                            <td>{log.game}</td>
+                            <td>{log.gameid}</td>
                             <td>{log.gamename}</td>
                             <td>{log.winner}</td>
                             <td>{log.players}</td>

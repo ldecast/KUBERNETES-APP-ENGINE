@@ -38,6 +38,10 @@ class Charts extends Component {
     });
   }
 
+  componentWillUnmount() {
+    socket.off('log-inserted');
+  }
+
   render() {
     return (
       <div className="charts" >
@@ -51,7 +55,6 @@ class Charts extends Component {
                 <div className="vrs__container">
                   <h2>WORKERS COMPARISON</h2>
                   <div className="vrs__chart">
-                    {console.log(this.state.inserts_workers)}
                     <Bars
                       workers={this.state.inserts_workers}
                     />

@@ -24,6 +24,9 @@ function Homepage() {
 
   useEffect(() => {
     getData();
+    return () => {
+      socket.off('log-inserted');
+    }
   }, [])
 
   useEffect(() => {

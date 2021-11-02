@@ -27,6 +27,9 @@ function Redis() {
 
     useEffect(() => {
         getReports();
+        return () => {
+            socket.off('redis-report');
+        }
     }, [])
 
     useEffect(() => {

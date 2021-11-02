@@ -26,6 +26,9 @@ function GamerStats() {
       console.log('gamerStats socket ok');
       getPlayers();
     });
+    return () => {
+      socket.off('log-inserted');
+    }
   }, [])
 
   useEffect(() => {
