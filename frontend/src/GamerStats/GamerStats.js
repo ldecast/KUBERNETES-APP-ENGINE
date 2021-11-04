@@ -49,10 +49,6 @@ function GamerStats() {
         });
     }
     getStats();
-    socket.on('log-inserted', () => {
-      console.log('gamerStats socket ok');
-      getStats();
-    });
   }, [player])
 
 

@@ -20,6 +20,8 @@ module.exports = {
             // console.log("key updated:", key);
             io.emit('redis-report');
         });
+        // client.set("key", "value", redis.print);
+        // client.get("key", redis.print);
         // console.log("Redis service is connected");
         client.on('error', err => {
             console.log('Redis Error: ' + err);

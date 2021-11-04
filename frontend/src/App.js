@@ -11,12 +11,21 @@ import GamerStats from './GamerStats/GamerStats';
 import Logs from './Logs/Logs';
 import Charts from './Charts/Charts';
 import Redis from './Redis/Redis';
+import { useState } from 'react';
 
 function App() {
+
+  const [state, setState] = useState(0);
+
+  function ClickRequest() {
+    // console.log(state)
+    setState(state + 1);
+  }
+
   return (
-    <div className="app">
+    <div className="app" key={state}>
       <Router>
-        <Sidebar />
+        <Sidebar click={ClickRequest} />
         <Switch>
           <Route exact path={["/", "/home"]}>
             <Homepage />

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { useState, useEffect } from 'react';
 import "./Charts.css";
 import Header from '../Header/Header';
 import Loading from '../Loading/Loading';
@@ -6,78 +6,72 @@ import Bars from './Bars';
 import Pie from './Pie';
 import socket from "../socket";
 
-class Charts extends Component {
+function Charts() {
 
-  constructor() {
-    super();
-    this.state = {
-      top3_games: [],
-      inserts_workers: [],
-      isLoaded: false,
-    };
-  }
+  const [state, setState] = useState({
+    top3_games: [],
+    inserts_workers: [],
+    isLoaded: false
+  });
 
-  getData() {
-    this.setState({
-      isLoaded: false
-    });
+  const getData = () => {
     fetch(process.env.REACT_APP_API_URL_ANALYTICS)
       .then(response => response.json())
       .then(data => {
         // console.log(data);
-        this.setState(data)
+        setState(data)
       });
   };
 
-  componentDidMount() {
-    this.getData();
+  useEffect(() => {
+    getData();
+    return () => {
+      socket.off('log-inserted');
+    }
+  }, [])
 
+  useEffect(() => {
     socket.on('log-inserted', () => {
       console.log('charts socket ok');
-      this.getData();
+      getData();
     });
-  }
+  }, [])
 
-  componentWillUnmount() {
-    socket.off('log-inserted');
-  }
 
-  render() {
-    return (
-      <div className="charts" >
-        <Header title={"Analytics"} />
-        {
-          this.state.isLoaded
-            ?
-            (
-              <div className="flex__container">
+  return (
+    <div className="charts" >
+      <Header title={"Analytics"} />
+      {
+        state.isLoaded
+          ?
+          (
+            <div className="flex__container">
 
-                <div className="vrs__container">
-                  <h2>WORKERS COMPARISON</h2>
-                  <div className="vrs__chart">
-                    <Bars
-                      workers={this.state.inserts_workers}
-                    />
-                  </div>
+              <div className="vrs__container">
+                <h2>WORKERS COMPARISON</h2>
+                <div className="vrs__chart">
+                  <Bars
+                    workers={state.inserts_workers}
+                  />
                 </div>
-
-                <div className="top__container">
-                  <h2>TOP 3 GAMES</h2>
-                  <div className="top__chart">
-                    <Pie
-                      top_3={this.state.top3_games}
-                    />
-                  </div>
-                </div>
-
               </div>
-            )
-            :
-            <Loading />
-        }
-      </div >
-    );
-  }
+
+              <div className="top__container">
+                <h2>TOP 3 GAMES</h2>
+                <div className="top__chart">
+                  <Pie
+                    top_3={state.top3_games}
+                  />
+                </div>
+              </div>
+
+            </div>
+          )
+          :
+          <Loading />
+      }
+    </div >
+  );
 
 }
 

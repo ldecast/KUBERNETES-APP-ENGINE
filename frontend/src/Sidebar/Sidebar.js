@@ -9,7 +9,7 @@ import DehazeIcon from '@material-ui/icons/Dehaze';
 import RedisIcon from '@material-ui/icons/Timeline';
 import { Link } from "react-router-dom";
 
-function Sidebar() {
+function Sidebar(props) {
 
   const [class_name, setState] = useState({
     root: "root__sidebar",
@@ -35,23 +35,23 @@ function Sidebar() {
         <DehazeIcon />
       </div >
       <div className={class_name.side}>
-        <Link className={`sidebarOption`} to={`/home`}>
+        <Link className={`sidebarOption`} to={`/home`} onClick={props.click} >
           <HomeIcon />
           {"Homepage"}
         </Link>
-        <Link className={`sidebarOption`} to={`/stats`}>
+        <Link className={`sidebarOption`} to={`/stats`} onClick={props.click}>
           <PersonIcon />
           {"Gamer stats"}
         </Link>
-        <Link className={`sidebarOption`} to={`/charts`}>
+        <Link className={`sidebarOption`} to={`/charts`} onClick={props.click}>
           <EqualizerIcon />
           {"Charts"}
         </Link>
-        <Link className={`sidebarOption`} to={`/transactions`}>
+        <Link className={`sidebarOption`} to={`/transactions`} onClick={props.click}>
           <ReceiptIcon />
           {"Transactions"}
         </Link>
-        <Link className={`sidebarOption`} to={`/redisReports`}>
+        <Link className={`sidebarOption`} to={`/redisReports`} onClick={props.click}>
           <RedisIcon />
           {"Redis Reports"}
         </Link>
