@@ -27,10 +27,9 @@ type Command struct {
 }
 
 type Request struct {
-	Gameid         int    `json:"gameid"`
-	Gamename       string `json:"gamename"`
-	Players        int    `json:"players"`
-	Request_number int    `json:"request_number"`
+	Gameid   int    `json:"gameid"`
+	Gamename string `json:"gamename"`
+	Players  int    `json:"players"`
 }
 
 var command Command
@@ -40,7 +39,6 @@ func processInput(input string) {
 	rungame --gamename "1 | Game1 | 2 | Game2" --players 30 --rungames 30000 --concurrence 10 --timeout 3m
 	*/
 	split := strings.Split(input, " ")
-	// fmt.Println(split)
 	/* Variables temporales */
 	var tmp string
 	var game_tmp Game
@@ -111,7 +109,6 @@ func generateJsonBodies() {
 		request.Gameid = randomGame.id
 		request.Gamename = randomGame.name
 		request.Players = randomPlayers
-		request.Request_number = i
 		bodies = append(bodies, request)
 		// fmt.Println(request)
 	}
@@ -142,7 +139,7 @@ func generateTraffic() {
 	for c := 0; c < command.rungames; c++ {
 		select {
 		case <-done:
-			request_number++
+			continue
 		case <-timeout:
 			fmt.Println("Time limit exceeded!")
 			return
@@ -165,6 +162,7 @@ func doRequest(queue chan Request, worknumber int, done chan bool) {
 			fmt.Println(err)
 		}
 		_, err = http.Post(INGRESS, "application/json", bytes.NewBuffer(req))
+		request_number++
 		if err != nil {
 			fmt.Println(err)
 		}
