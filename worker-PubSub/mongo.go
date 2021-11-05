@@ -8,7 +8,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-const MONGODB_URI = "mongodb+srv://root:tZqqBxg6KnfQqhWA@cluster0.szsb6.mongodb.net/proyecto2-so1?retryWrites=true&w=majority"
+const MONGODB_URI = "mongodb://root:123456789@35.188.126.89:27017"
+const MONGO_DB = "squidgame"
+const MONGO_COL = "logs"
 
 type MongoLog struct {
 	Request_number int    `json:"request_number"`
@@ -33,8 +35,8 @@ func connectMongo(ctx context.Context) (*mongo.Collection, error) {
 	if err := mongoClient.Ping(ctx, readpref.Primary()); err != nil {
 		return nil, err
 	}
-	db := mongoClient.Database("proyecto2-so1")
-	col := db.Collection("squidgame")
+	db := mongoClient.Database(MONGO_DB)
+	col := db.Collection(MONGO_COL)
 	return col, nil
 }
 

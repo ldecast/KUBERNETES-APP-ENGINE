@@ -12,8 +12,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-const projectID = "pubsub-tester-330701"
-const subID = "logs-sub"
+const projectID = "inner-bridge-331015"
+const subID = "squidgame-subs"
 
 func subscribe(col *mongo.Collection, redisClient *redis.Client, ctx context.Context) error {
 	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "key.json")
