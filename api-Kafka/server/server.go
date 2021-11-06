@@ -9,13 +9,13 @@ import (
 	"google.golang.org/grpc"
 )
 
-// type server struct{}
+const server_PORT = 9000
 
 func main() {
 
 	fmt.Println("Go gRPC Server for API Kafka!")
 
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 9000))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", server_PORT))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}

@@ -15,20 +15,21 @@ import (
 	"google.golang.org/grpc"
 )
 
-type RequestBody struct {
-	Gameid         int    `json:"gameid"`
-	Gamename       string `json:"gamename"`
-	Players        int    `json:"players"`
-	Request_number int    `json:"request_number"`
+type GameBody struct {
+	Gameid   int    `json:"gameid"`
+	Gamename string `json:"gamename"`
+	Players  int    `json:"players"`
 }
 
 func sayHi(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello from gRPC Kafka producer!")
 }
 
+const gRPC_server_address = "localhost:9000"
+
 func sendRequest(w http.ResponseWriter, r *http.Request) {
 	var conn *grpc.ClientConn
-	conn, err := grpc.Dial(":9000", grpc.WithInsecure())
+	conn, err := grpc.Dial(gRPC_server_address, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %s", err)
 	}
@@ -38,14 +39,17 @@ func sendRequest(w http.ResponseWriter, r *http.Request) {
 	c := game.NewGameServiceClient(conn)
 
 	reqBody, _ := ioutil.ReadAll(r.Body)
-	var request RequestBody
-	json.Unmarshal(reqBody, &request)
+	var game_body GameBody
+	json.Unmarshal(reqBody, &game_body)
 
-	g := game.Request{Gameid: int32(request.Gameid), Gamename: request.Gamename, Players: int32(request.Players), RequestNumber: int32(request.Request_number)}
+	g := game.Request{
+		Gameid:   int32(game_body.Gameid),
+		Gamename: game_body.Gamename,
+		Players:  int32(game_body.Players)}
 
 	response, err := c.Play(context.Background(), &game.ServerRequest{Request: &g})
 	if err != nil {
-		log.Fatalf("Error when calling Play: %s", err)
+		log.Fatalf("Client error when calling Play: %s", err)
 	}
 	log.Printf("Response from gRPC server: %s", response.Status)
 	fmt.Fprintf(w, "Response from gRPC server: %s", response.Status)

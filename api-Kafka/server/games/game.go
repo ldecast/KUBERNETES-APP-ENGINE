@@ -2,7 +2,7 @@ package games
 
 import (
 	context "context"
-	// "encoding/json"
+
 	"fmt"
 	"log"
 	"math/rand"
@@ -27,15 +27,16 @@ func publish(msg Log) error {
 }
 
 func MaxPlayer(game *Request) *ServerResponse {
+	request_number++
 	/* Crear el log */
 	l := Log{
-		Request_number: int(game.RequestNumber),
+		Request_number: request_number,
 		Gameid:         1,
 		Gamename:       "MaxPlayer",
 		Winner:         strconv.Itoa(int(game.Players)),
 		Players:        int(game.Players),
 		Worker:         "Kafka"}
-	/* Insertar a la cola de Kafka */
+	/* Insertar a cola de Kafka */
 	err := publish(l)
 	if err != nil {
 		fmt.Printf("Error publishing log")
@@ -45,15 +46,16 @@ func MaxPlayer(game *Request) *ServerResponse {
 }
 
 func MinPlayer(game *Request) *ServerResponse {
+	request_number++
 	/* Crear el log */
 	l := Log{
-		Request_number: int(game.RequestNumber),
+		Request_number: request_number,
 		Gameid:         2,
 		Gamename:       "MinPlayer",
 		Winner:         "1",
 		Players:        int(game.Players),
 		Worker:         "Kafka"}
-	/* Insertar a la cola de Kafka */
+	/* Insertar a cola de Kafka */
 	err := publish(l)
 	if err != nil {
 		fmt.Printf("Error publishing log")
@@ -63,6 +65,7 @@ func MinPlayer(game *Request) *ServerResponse {
 }
 
 func RandomPlayer(game *Request) *ServerResponse {
+	request_number++
 	/* Crear el log */
 	randomIndex := rand.Intn(int(game.Players))
 	if randomIndex == 0 {
@@ -73,13 +76,13 @@ func RandomPlayer(game *Request) *ServerResponse {
 		}
 	}
 	l := Log{
-		Request_number: int(game.RequestNumber),
+		Request_number: request_number,
 		Gameid:         3,
 		Gamename:       "RandomPlayer",
 		Winner:         strconv.Itoa(randomIndex),
 		Players:        int(game.Players),
 		Worker:         "Kafka"}
-	/* Insertar a la cola de Kafka */
+	/* Insertar a cola de Kafka */
 	err := publish(l)
 	if err != nil {
 		fmt.Printf("Error publishing log")
@@ -88,9 +91,11 @@ func RandomPlayer(game *Request) *ServerResponse {
 	return &ServerResponse{Status: "[OK - 200]"}
 }
 
+var request_number int = 0
+
 func (s *Server) Play(ctx context.Context, in *ServerRequest) (*ServerResponse, error) {
 	game := in.Request
-	log.Printf("Receive message body from client: %s", game)
+	log.Printf("Receive request %d from client: %s", request_number+1, game)
 
 	switch game.Gameid {
 	case 1:
