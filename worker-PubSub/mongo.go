@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-const MONGODB_URI = "mongodb://root:123456789@35.188.126.89:27017"
+const MONGODB_URI = "mongodb://admin:H3XT3tpQ3KeLTPQ8@35.188.126.89:27017"
 const MONGO_DB = "squidgame"
 const MONGO_COL = "logs"
 

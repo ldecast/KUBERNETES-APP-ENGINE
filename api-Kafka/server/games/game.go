@@ -2,11 +2,12 @@ package games
 
 import (
 	context "context"
-
 	"fmt"
 	"log"
 	"math/rand"
+	kafkaproducer "server/kafka"
 	"strconv"
+	"sync/atomic"
 )
 
 type Server struct {
@@ -21,91 +22,72 @@ type Log struct {
 	Worker         string `json:"worker"`
 }
 
-func publish(msg Log) error {
-	/* Publicar en Kafka */
+var brokers = [...]string{""}
+
+const topic = "first_kafka_topic"
+
+func publish(msg Log, publisher kafkaproducer.Publisher) error {
+	if err := publisher.Publish(context.Background(), msg); err != nil {
+		fmt.Println(err)
+		return err
+	}
 	return nil
 }
 
-func MaxPlayer(game *Request) *ServerResponse {
-	request_number++
-	/* Crear el log */
-	l := Log{
-		Request_number: request_number,
-		Gameid:         1,
-		Gamename:       "MaxPlayer",
-		Winner:         strconv.Itoa(int(game.Players)),
-		Players:        int(game.Players),
-		Worker:         "Kafka"}
-	/* Insertar a cola de Kafka */
-	err := publish(l)
-	if err != nil {
-		fmt.Printf("Error publishing log")
-		return &ServerResponse{Status: "[ERR - 500]"}
-	}
-	return &ServerResponse{Status: "[OK - 200]"}
+func MaxPlayer(players int) (string, string) {
+	return "MaxPlayer", strconv.Itoa(players)
 }
 
-func MinPlayer(game *Request) *ServerResponse {
-	request_number++
-	/* Crear el log */
-	l := Log{
-		Request_number: request_number,
-		Gameid:         2,
-		Gamename:       "MinPlayer",
-		Winner:         "1",
-		Players:        int(game.Players),
-		Worker:         "Kafka"}
-	/* Insertar a cola de Kafka */
-	err := publish(l)
-	if err != nil {
-		fmt.Printf("Error publishing log")
-		return &ServerResponse{Status: "[ERR - 500]"}
-	}
-	return &ServerResponse{Status: "[OK - 200]"}
+func MinPlayer(players int) (string, string) {
+	return "MinPlayer", "1"
 }
 
-func RandomPlayer(game *Request) *ServerResponse {
-	request_number++
-	/* Crear el log */
-	randomIndex := rand.Intn(int(game.Players))
+func RandomPlayer(players int) (string, string) {
+	randomIndex := rand.Intn(players)
 	if randomIndex == 0 {
-		if game.Players > 1 {
+		if players > 1 {
 			randomIndex = 2
 		} else {
 			randomIndex = 1
 		}
 	}
-	l := Log{
-		Request_number: request_number,
-		Gameid:         3,
-		Gamename:       "RandomPlayer",
-		Winner:         strconv.Itoa(randomIndex),
-		Players:        int(game.Players),
-		Worker:         "Kafka"}
-	/* Insertar a cola de Kafka */
-	err := publish(l)
-	if err != nil {
-		fmt.Printf("Error publishing log")
-		return &ServerResponse{Status: "[ERR - 500]"}
-	}
-	return &ServerResponse{Status: "[OK - 200]"}
+	return "RandomPlayer", strconv.Itoa(randomIndex)
 }
 
-var request_number int = 0
+var request_number int64 = 0
+
+var publisher = kafkaproducer.NewPublisher(brokers[:], topic)
 
 func (s *Server) Play(ctx context.Context, in *ServerRequest) (*ServerResponse, error) {
 	game := in.Request
-	log.Printf("Receive request %d from client: %s", request_number+1, game)
+	log.Printf("Receive request from client: %s", game)
 
-	switch game.Gameid {
+	/* Crear el log */
+	l := Log{
+		Request_number: int(atomic.AddInt64(&request_number, 1)),
+		Gameid:         int(game.Gameid),
+		Gamename:       "",
+		Winner:         "",
+		Players:        int(game.Players),
+		Worker:         "Kafka"}
+
+	switch l.Gameid {
 	case 1:
-		return MaxPlayer(game), nil
+		l.Gamename, l.Winner = MaxPlayer(l.Players)
 	case 2:
-		return MinPlayer(game), nil
+		l.Gamename, l.Winner = MinPlayer(l.Players)
 	case 3:
-		return RandomPlayer(game), nil
+		l.Gamename, l.Winner = RandomPlayer(l.Players)
 	default:
 		fmt.Println("No existe ningún juego con ese identificador, intente de nuevo.")
 		return &ServerResponse{Status: "[ERR - 400]"}, nil
 	}
+
+	/* Publicar en Kafka */
+	err := publish(l, publisher)
+	if err != nil {
+		return &ServerResponse{Status: "[ERR - 400]"}, nil
+	}
+
+	return &ServerResponse{Status: "[OK - 200]"}, nil
 }

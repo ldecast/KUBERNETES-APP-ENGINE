@@ -156,7 +156,6 @@ func doRequest(queue chan Request, worknumber int, done chan bool) {
 	for {
 		k := <-queue
 		// time.Sleep(1 * time.Second)
-		// k.Request_number = request_number
 		req, err := json.Marshal(k)
 		if err != nil {
 			fmt.Println(err)
@@ -188,7 +187,7 @@ func readInput() {
 	processInput(text)
 	generateJsonBodies()
 	generateTraffic()
-	fmt.Printf("%d requests has been sent.\n", request_number)
+	fmt.Printf("At least %d requests has been sent.\n", request_number)
 }
 
 func main() {
