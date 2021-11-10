@@ -6,7 +6,6 @@ message Request {
     int32 gameid = 1;
     string gamename = 2;
     int32 players = 3;
-    int32 request_number = 4;
 }
 
 message ServerRequest {

@@ -2,11 +2,14 @@ package games
 
 import (
 	context "context"
-	// "encoding/json"
+	"encoding/json"
 	"fmt"
 	"log"
 	"math/rand"
 	"strconv"
+	"sync/atomic"
+
+	"github.com/streadway/amqp"
 )
 
 type Server struct {
@@ -21,86 +24,94 @@ type Log struct {
 	Worker         string `json:"worker"`
 }
 
+var Rabbit_connection *amqp.Connection
+
+const QueueName = "RABBITMQ_QUEUE"
+
 func publish(msg Log) error {
-	/* Publicar en RabbitMQ */
-	return nil
-}
-
-func MaxPlayer(game *Request) *ServerResponse {
-	/* Crear el log */
-	l := Log{
-		Request_number: int(game.RequestNumber),
-		Gameid:         1,
-		Gamename:       "MaxPlayer",
-		Winner:         strconv.Itoa(int(game.Players)),
-		Players:        int(game.Players),
-		Worker:         "RabbitMQ"}
-	/* Insertar a cola de RabbitMQ */
-	err := publish(l)
+	// Let's start by opening a channel to our RabbitMQ instance
+	ch, err := Rabbit_connection.Channel()
 	if err != nil {
-		fmt.Printf("Error publishing log")
-		return &ServerResponse{Status: "[ERR - 500]"}
+		fmt.Println(err)
+		return err
 	}
-	return &ServerResponse{Status: "[OK - 200]"}
-}
+	defer ch.Close()
 
-func MinPlayer(game *Request) *ServerResponse {
-	/* Crear el log */
-	l := Log{
-		Request_number: int(game.RequestNumber),
-		Gameid:         2,
-		Gamename:       "MinPlayer",
-		Winner:         "1",
-		Players:        int(game.Players),
-		Worker:         "RabbitMQ"}
-	/* Insertar a cola de RabbitMQ */
-	err := publish(l)
+	body, err := json.Marshal(msg)
 	if err != nil {
-		fmt.Printf("Error publishing log")
-		return &ServerResponse{Status: "[ERR - 500]"}
+		fmt.Println(err)
+		return err
 	}
-	return &ServerResponse{Status: "[OK - 200]"}
+	err = ch.Publish(
+		"",
+		QueueName,
+		false,
+		false,
+		amqp.Publishing{
+			ContentType: "application/json",
+			Body:        body,
+		})
+	if err != nil {
+		log.Printf("Failed to publish a message: %s", err)
+		return err
+	} else {
+		fmt.Println("Successfully Published Message to Queue")
+		return nil
+	}
 }
 
-func RandomPlayer(game *Request) *ServerResponse {
-	/* Crear el log */
-	randomIndex := rand.Intn(int(game.Players))
+func MaxPlayer(players int) (string, string) {
+	return "MaxPlayer", strconv.Itoa(players)
+}
+
+func MinPlayer(players int) (string, string) {
+	return "MinPlayer", "1"
+}
+
+func RandomPlayer(players int) (string, string) {
+	randomIndex := rand.Intn(players)
 	if randomIndex == 0 {
-		if game.Players > 1 {
+		if players > 1 {
 			randomIndex = 2
 		} else {
 			randomIndex = 1
 		}
 	}
-	l := Log{
-		Request_number: int(game.RequestNumber),
-		Gameid:         3,
-		Gamename:       "RandomPlayer",
-		Winner:         strconv.Itoa(randomIndex),
-		Players:        int(game.Players),
-		Worker:         "RabbitMQ"}
-	/* Insertar a cola de RabbitMQ */
-	err := publish(l)
-	if err != nil {
-		fmt.Printf("Error publishing log")
-		return &ServerResponse{Status: "[ERR - 500]"}
-	}
-	return &ServerResponse{Status: "[OK - 200]"}
+	return "RandomPlayer", strconv.Itoa(randomIndex)
 }
+
+var request_number int64 = 0
 
 func (s *Server) Play(ctx context.Context, in *ServerRequest) (*ServerResponse, error) {
 	game := in.Request
-	log.Printf("Receive message body from client: %s", game)
+	log.Printf("Receive request from client: %s", game)
 
-	switch game.Gameid {
+	/* Crear el log */
+	l := Log{
+		Request_number: int(atomic.AddInt64(&request_number, 1)),
+		Gameid:         int(game.Gameid),
+		Gamename:       "",
+		Winner:         "",
+		Players:        int(game.Players),
+		Worker:         "RabbitMQ"}
+
+	switch l.Gameid {
 	case 1:
-		return MaxPlayer(game), nil
+		l.Gamename, l.Winner = MaxPlayer(l.Players)
 	case 2:
-		return MinPlayer(game), nil
+		l.Gamename, l.Winner = MinPlayer(l.Players)
 	case 3:
-		return RandomPlayer(game), nil
+		l.Gamename, l.Winner = RandomPlayer(l.Players)
 	default:
 		fmt.Println("No existe ningún juego con ese identificador, intente de nuevo.")
 		return &ServerResponse{Status: "[ERR - 400]"}, nil
 	}
+
+	/* Publicar en RabbitMQ */
+	err := publish(l)
+	if err != nil {
+		return &ServerResponse{Status: "[ERR - 400]"}, nil
+	}
+
+	return &ServerResponse{Status: "[OK - 200]"}, nil
 }
