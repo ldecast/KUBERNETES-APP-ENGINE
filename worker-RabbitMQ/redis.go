@@ -4,13 +4,16 @@ import (
 	"github.com/go-redis/redis"
 )
 
-const REDIS_HOST = "127.0.0.1"
-const REDIS_PORT = "6379"
+const (
+	REDIS_HOST = "35.193.105.209"
+	REDIS_PORT = "6379"
+	REDIS_PASS = "Y5hNsA9hCnvDXXQLUjFuQxU3KKtwHrXW"
+)
 
 func connectRedis() (*redis.Client, error) {
 	redisClient := redis.NewClient(&redis.Options{
 		Addr:     REDIS_HOST + ":" + REDIS_PORT,
-		Password: "Y5hNsA9hCnvDXXQLUjFuQxU3KKtwHrXW",
+		Password: REDIS_PASS,
 		DB:       0,
 	})
 	_, err := redisClient.Ping().Result()

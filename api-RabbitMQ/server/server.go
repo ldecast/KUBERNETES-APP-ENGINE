@@ -5,7 +5,6 @@ import (
 	"log"
 	"net"
 	"server/games"
-	"server/worker"
 
 	"github.com/streadway/amqp"
 	"google.golang.org/grpc"
@@ -60,9 +59,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// Iniciar escucha de mensajes
-	go worker.StartWorker()
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", server_PORT))
 	if err != nil {

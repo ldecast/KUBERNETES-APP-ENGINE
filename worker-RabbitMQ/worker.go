@@ -2,21 +2,80 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 
 	"github.com/go-redis/redis"
+	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
+)
+
+const (
+	queue_name        = "RABBITMQ_QUEUE"
+	string_connection = "amqp://guest:guest@localhost:5672/rabbit"
 )
 
 func subscribe(col *mongo.Collection, redisClient *redis.Client, ctx context.Context) error {
 	/* Suscribirse a RabbitMQ */
+	rabbit_connection, err := amqp.Dial(string_connection)
+	if err != nil {
+		fmt.Println("Failed Initializing RabbitMQ Broker Connection")
+		return err
+	}
 
+	ch, err := rabbit_connection.Channel()
+	if err != nil {
+		return err
+	}
+	defer ch.Close()
+
+	if err != nil {
+		return err
+	}
+
+	msgs, err := ch.Consume(
+		queue_name,
+		"",
+		true,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
+	forever := make(chan bool)
+	var l MongoLog
+	go func() {
+		for d := range msgs {
+			fmt.Printf("Recieved RabbitMQ Message: %s\n", d.Body)
+
+			json.Unmarshal(d.Body, &l)
+			/* Insertar a Mongo */
+			err_mongo := insertMongoLog(l, col, ctx)
+			if err_mongo != nil {
+				fmt.Println(err_mongo)
+			}
+			/* Actualizar metadata en Redis */
+			err_redis := updateRedisValues(l, redisClient)
+			if err_redis != nil {
+				fmt.Println(err_redis)
+			}
+		}
+	}()
+
+	fmt.Println("Worker connected to RabbitMQ Instance")
+	fmt.Println(" [*] - Waiting for messages")
+	<-forever
 	return nil
 }
 
 func main() {
 	fmt.Println("Go RabbitMQ worker!")
+
 	ctx := context.Background()
 	/* Conectar a Mongo y obtener la colección donde se inserta cada log */
 	mongoClient, err := connectMongo(ctx)

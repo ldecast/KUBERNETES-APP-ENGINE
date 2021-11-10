@@ -59,9 +59,9 @@ function Logs() {
                       <th>Worker</th>
                     </tr>
                     {
-                      state.logs.map((log, i) => {
+                      state.logs.map((log) => {
                         return (
-                          <tr key={i}>
+                          <tr key={log.request_number}>
                             <td>&nbsp;&nbsp; {log.request_number}</td>
                             <td>{log.gameid}</td>
                             <td>{log.gamename}</td>

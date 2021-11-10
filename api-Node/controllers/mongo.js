@@ -10,7 +10,7 @@ module.exports = {
             if (!err) {
                 console.log("Mongo Database is connected");
                 collection = client.db(process.env.DB_MONGO).collection(process.env.COLLECTION_MONGO);
-                setInterval(() => io.emit('log-inserted'), 1000 * 2);
+                setInterval(() => io.emit('log-inserted'), 1000 * 1);
                 /* changeStream = collection.watch();
                 changeStream.on("change", next => {
                     // console.log("received a change to the collection: \t", next);

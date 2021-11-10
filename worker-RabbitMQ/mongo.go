@@ -8,8 +8,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-const MONGODB_URI = "mongodb+srv://root:tZqqBxg6KnfQqhWA@cluster0.szsb6.mongodb.net/proyecto2-so1?retryWrites=true&w=majority"
-
 type MongoLog struct {
 	Request_number int    `json:"request_number"`
 	Gameid         int    `json:"gameid"`
@@ -18,6 +16,12 @@ type MongoLog struct {
 	Players        int    `json:"players"`
 	Worker         string `json:"worker"`
 }
+
+const (
+	MONGODB_URI = "mongodb://admin:H3XT3tpQ3KeLTPQ8@35.188.126.89:27017"
+	MONGO_DB    = "squidgame"
+	MONGO_COL   = "logs"
+)
 
 func connectMongo(ctx context.Context) (*mongo.Collection, error) {
 	/* Connect to my cluster */
@@ -33,8 +37,8 @@ func connectMongo(ctx context.Context) (*mongo.Collection, error) {
 	if err := mongoClient.Ping(ctx, readpref.Primary()); err != nil {
 		return nil, err
 	}
-	db := mongoClient.Database("proyecto2-so1")
-	col := db.Collection("squidgame")
+	db := mongoClient.Database(MONGO_DB)
+	col := db.Collection(MONGO_COL)
 	return col, nil
 }
 
