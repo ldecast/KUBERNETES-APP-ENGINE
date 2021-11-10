@@ -8,13 +8,13 @@ COPY go.sum ./
 RUN go mod download
 
 COPY *.go ./
+COPY key.json ./
 
-RUN go build -o /go-pubsub-client
+RUN go build -o /go-pubsub-server
 
-EXPOSE 10000
+EXPOSE 9000
 
-CMD [ "/go-pubsub-client" ]
-
+CMD [ "/go-pubsub-server" ]
 
 
 

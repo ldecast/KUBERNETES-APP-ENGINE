@@ -2,19 +2,19 @@ FROM golang:1.17
 
 WORKDIR /app
 
-ADD /games ./
 COPY go.mod ./
 COPY go.sum ./
 RUN go mod download
 
 COPY *.go ./
+COPY key.json ./
 
-RUN go build -o /go-pubsub-client
+RUN go build -o /go-pubsub-worker
 
-EXPOSE 10000
+EXPOSE 8080
 
-CMD [ "/go-pubsub-client" ]
 
+CMD [ "/go-pubsub-worker" ]
 
 
 
