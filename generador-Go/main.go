@@ -149,8 +149,8 @@ func generateTraffic() {
 	fmt.Println("Rungames finished!")
 }
 
-// const INGRESS = "http://193.60.11.13.nip.io"
-const INGRESS = "http://localhost:10000/play"
+// const INGRESS = "http://localhost:10000/play"
+const INGRESS = "http://34.133.215.125.nip.io"
 
 func doRequest(queue chan Request, worknumber int, done chan bool) {
 	for {
