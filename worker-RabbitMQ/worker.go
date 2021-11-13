@@ -5,20 +5,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/go-redis/redis"
 	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-const (
-	queue_name        = "RABBITMQ_QUEUE"
-	string_connection = "amqp://guest:guest@localhost:5672/rabbit"
-)
+const queue_name = "RABBITMQ_QUEUE"
+
+var address_rabbitmq string // = "amqp://guest:guest@localhost:5672/rabbit"
 
 func subscribe(col *mongo.Collection, redisClient *redis.Client, ctx context.Context) error {
 	/* Suscribirse a RabbitMQ */
-	rabbit_connection, err := amqp.Dial(string_connection)
+	rabbit_connection, err := amqp.Dial("amqp://guest:guest@" + address_rabbitmq + ":5672/")
 	if err != nil {
 		fmt.Println("Failed Initializing RabbitMQ Broker Connection")
 		return err
@@ -75,6 +75,11 @@ func subscribe(col *mongo.Collection, redisClient *redis.Client, ctx context.Con
 
 func main() {
 	fmt.Println("Go RabbitMQ worker!")
+
+	address_rabbitmq = os.Getenv("address_rabbitmq")
+	if address_rabbitmq == "" {
+		log.Fatal("address_rabbitmq is not defined as environment variable")
+	}
 
 	ctx := context.Background()
 	/* Conectar a Mongo y obtener la colección donde se inserta cada log */

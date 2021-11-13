@@ -25,9 +25,11 @@ type Log struct {
 	Worker         string `json:"worker"`
 }
 
-const projectID = "inner-bridge-331015"
-const topicID = "squidgame-topic"
-const subID = "squidgame-subs"
+const (
+	projectID = "inner-bridge-331015"
+	topicID   = "squidgame-topic"
+	subID     = "squidgame-subs"
+)
 
 func publish(msg Log) error {
 	/* Publicar en Pub/Sub */

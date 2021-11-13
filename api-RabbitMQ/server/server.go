@@ -4,20 +4,20 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 	"server/games"
 
 	"github.com/streadway/amqp"
 	"google.golang.org/grpc"
 )
 
-const (
-	server_PORT       = 9000
-	string_Connection = "amqp://guest:guest@localhost:5672/rabbit"
-)
+const server_PORT = 9000
+
+var address_rabbitmq string // = "amqp://guest:guest@localhost:5672/rabbit"
 
 func initRabbit() error {
 	var errConn error
-	games.Rabbit_connection, errConn = amqp.Dial(string_Connection)
+	games.Rabbit_connection, errConn = amqp.Dial("amqp://guest:guest@" + address_rabbitmq + ":5672/")
 	if errConn != nil {
 		fmt.Println("Failed Initializing RabbitMQ Broker Connection")
 		return errConn
@@ -53,6 +53,11 @@ func initRabbit() error {
 func main() {
 
 	fmt.Println("Go gRPC Server for API RabbitMQ!")
+
+	address_rabbitmq = os.Getenv("address_rabbitmq")
+	if address_rabbitmq == "" {
+		log.Fatal("address_rabbitmq is not defined as environment variable")
+	}
 
 	// Iniciar conexión con RabbitMQ
 	err := initRabbit()
