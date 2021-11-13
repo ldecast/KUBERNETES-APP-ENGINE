@@ -25,8 +25,10 @@ func sayHi(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello from gRPC Kafka producer!")
 }
 
-var gRPC_server_host string
-var gRPC_server_port string
+const (
+	gRPC_server_host = "localhost"
+	gRPC_server_port = "9000"
+)
 
 func sendRequest(w http.ResponseWriter, r *http.Request) {
 	var conn *grpc.ClientConn
@@ -66,7 +68,7 @@ func main() {
 	// all origins accepted with simple methods (GET, POST).
 	handler := cors.Default().Handler(mux)
 
-	gRPC_server_host = os.Getenv("server_host_kafka")
+	/* gRPC_server_host = os.Getenv("server_host_kafka")
 	if gRPC_server_host == "" {
 		log.Fatal("server_host_kafka is not defined as environment variable")
 	}
@@ -74,7 +76,7 @@ func main() {
 	gRPC_server_port = os.Getenv("server_port_kafka")
 	if gRPC_server_port == "" {
 		log.Fatal("server_port_kafka is not defined as environment variable")
-	}
+	} */
 
 	// Determine port for HTTP service.
 	port := os.Getenv("PORT")
