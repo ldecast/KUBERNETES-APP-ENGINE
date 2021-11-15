@@ -105,7 +105,7 @@ _Rutas disponibles:_
 
 ## Manual técnico 🖇️
 
-Por favor lee el [manual técnico](https://github.com/ldecast/Proyecto2_SO1/docs/ManualTécnico.pdf) para detalles de nuestro código, arquitectura y cada una de las tecnologías necesarias para la construcción del sistema del proyecto.
+Por favor lee el [manual técnico](https://github.com/ldecast/Proyecto2_SO1/blob/master/docs/ManualT%C3%A9cnico.pdf) para detalles de nuestro código, arquitectura y cada una de las tecnologías necesarias para la construcción del sistema del proyecto.
 
 <br>
 

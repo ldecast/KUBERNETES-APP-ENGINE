@@ -19,7 +19,7 @@ var rabbitmq_port string
 
 func initRabbit() error {
 	var errConn error
-	games.Rabbit_connection, errConn = amqp.Dial("amqp://guest:guest@" + rabbitmq_host + ":" + rabbitmq_port + "/rabbit")
+	games.Rabbit_connection, errConn = amqp.Dial("amqp://guest:guest@" + rabbitmq_host + ":" + rabbitmq_port + "/")
 	if errConn != nil {
 		fmt.Println("Failed Initializing RabbitMQ Broker Connection")
 		return errConn
@@ -58,12 +58,14 @@ func main() {
 
 	rabbitmq_host = os.Getenv("rabbitmq_host")
 	if rabbitmq_host == "" {
-		log.Fatal("rabbitmq_host is not defined as environment variable")
+		rabbitmq_host = "localhost"
+		// log.Fatal("rabbitmq_host is not defined as environment variable")
 	}
 
 	rabbitmq_port = os.Getenv("rabbitmq_port")
 	if rabbitmq_port == "" {
-		log.Fatal("rabbitmq_port is not defined as environment variable")
+		rabbitmq_port = "5672"
+		// log.Fatal("rabbitmq_port is not defined as environment variable")
 	}
 
 	// Iniciar conexión con RabbitMQ

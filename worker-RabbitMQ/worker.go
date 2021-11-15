@@ -20,7 +20,7 @@ var rabbitmq_port string
 
 func subscribe(col *mongo.Collection, redisClient *redis.Client, ctx context.Context) error {
 	/* Suscribirse a RabbitMQ */
-	rabbit_connection, err := amqp.Dial("amqp://guest:guest@" + rabbitmq_host + ":" + rabbitmq_port + "/rabbit")
+	rabbit_connection, err := amqp.Dial("amqp://guest:guest@" + rabbitmq_host + ":" + rabbitmq_port + "/")
 	if err != nil {
 		fmt.Println("Failed Initializing RabbitMQ Broker Connection")
 		return err
@@ -80,12 +80,14 @@ func main() {
 
 	rabbitmq_host = os.Getenv("rabbitmq_host")
 	if rabbitmq_host == "" {
-		log.Fatal("rabbitmq_host is not defined as environment variable")
+		rabbitmq_host = "localhost"
+		// log.Fatal("rabbitmq_host is not defined as environment variable")
 	}
 
 	rabbitmq_port = os.Getenv("rabbitmq_port")
 	if rabbitmq_port == "" {
-		log.Fatal("rabbitmq_port is not defined as environment variable")
+		rabbitmq_port = "5672"
+		// log.Fatal("rabbitmq_port is not defined as environment variable")
 	}
 
 	ctx := context.Background()
