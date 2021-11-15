@@ -13,7 +13,7 @@ function GamerStats() {
 
   useEffect(() => {
     const getPlayers = () => {
-      fetch(process.env.REACT_APP_API_URL_STATS)
+      fetch(process.env.REACT_APP_API_URL + "/stats")
         .then(response => response.json())
         .then(data => {
           // console.log(data);
@@ -40,7 +40,7 @@ function GamerStats() {
           player: player
         })
       };
-      fetch(process.env.REACT_APP_API_URL_STATS, requestOptions)
+      fetch(process.env.REACT_APP_API_URL + "/stats", requestOptions)
         .then(response => response.json())
         .then(data => {
           // console.log(data);

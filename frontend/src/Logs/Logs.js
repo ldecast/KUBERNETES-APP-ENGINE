@@ -12,7 +12,7 @@ function Logs() {
   });
 
   const getLogs = async () => {
-    fetch(process.env.REACT_APP_API_URL_LOGS)
+    fetch(process.env.REACT_APP_API_URL + "/transactions")
       .then(response => response.json())
       .then(data => {
         // console.log(data);

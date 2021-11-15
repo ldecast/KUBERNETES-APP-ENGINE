@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 
-const socket = io(process.env.REACT_APP_API_URL_ROOT);
+const socket = io(process.env.REACT_APP_API_URL);
 
 socket.on('connnection', () => {
     console.log('Connected to socket');

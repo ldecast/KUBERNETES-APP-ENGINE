@@ -15,7 +15,7 @@ function Charts() {
   });
 
   const getData = () => {
-    fetch(process.env.REACT_APP_API_URL_ANALYTICS)
+    fetch(process.env.REACT_APP_API_URL + "/analytics")
       .then(response => response.json())
       .then(data => {
         // console.log(data);

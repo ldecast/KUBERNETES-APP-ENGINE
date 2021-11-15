@@ -68,16 +68,6 @@ func main() {
 	// all origins accepted with simple methods (GET, POST).
 	handler := cors.Default().Handler(mux)
 
-	/* gRPC_server_host = os.Getenv("server_host_rabbitmq")
-	if gRPC_server_host == "" {
-		log.Fatal("server_host_rabbitmq is not defined as environment variable")
-	}
-
-	gRPC_server_port = os.Getenv("server_port_rabbitmq")
-	if gRPC_server_port == "" {
-		log.Fatal("server_port_rabbitmq is not defined as environment variable")
-	} */
-
 	// Determine port for HTTP service.
 	port := os.Getenv("PORT")
 	if port == "" {

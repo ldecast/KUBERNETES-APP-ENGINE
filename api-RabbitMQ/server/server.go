@@ -14,12 +14,11 @@ import (
 const server_PORT = 9000
 
 // "amqp://guest:guest@localhost:5672/rabbit"
-var rabbitmq_host string
-var rabbitmq_port string
+var rabbitmq_address string
 
 func initRabbit() error {
 	var errConn error
-	games.Rabbit_connection, errConn = amqp.Dial("amqp://guest:guest@" + rabbitmq_host + ":" + rabbitmq_port + "/")
+	games.Rabbit_connection, errConn = amqp.Dial("amqp://guest:guest@" + rabbitmq_address + "/")
 	if errConn != nil {
 		fmt.Println("Failed Initializing RabbitMQ Broker Connection")
 		return errConn
@@ -56,16 +55,10 @@ func main() {
 
 	fmt.Println("Go gRPC Server for API RabbitMQ!")
 
-	rabbitmq_host = os.Getenv("rabbitmq_host")
-	if rabbitmq_host == "" {
-		rabbitmq_host = "localhost"
-		// log.Fatal("rabbitmq_host is not defined as environment variable")
-	}
-
-	rabbitmq_port = os.Getenv("rabbitmq_port")
-	if rabbitmq_port == "" {
-		rabbitmq_port = "5672"
-		// log.Fatal("rabbitmq_port is not defined as environment variable")
+	rabbitmq_address = os.Getenv("rabbitmq_address")
+	if rabbitmq_address == "" {
+		// log.Fatal("rabbitmq_address is not defined as environment variable")
+		rabbitmq_address = "localhost:5672"
 	}
 
 	// Iniciar conexión con RabbitMQ

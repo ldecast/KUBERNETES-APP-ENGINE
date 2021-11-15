@@ -12,7 +12,7 @@ const RedisReports = require('./endpoints/redis_reports');
 /* init */
 const PORT = process.env.PORT || 8080;
 const app = express();
-// app.use(express.static(__dirname + '/public/build'));
+app.use(express.static(__dirname + '/public/build'));
 
 const server = http.createServer(app);
 

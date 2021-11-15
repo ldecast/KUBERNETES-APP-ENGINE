@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"os"
@@ -150,7 +151,7 @@ func generateTraffic() {
 }
 
 // const INGRESS = "http://localhost:10000/play"
-const INGRESS = "http://34.133.215.125.nip.io"
+const INGRESS = "http://35.188.110.226.nip.io/"
 
 func doRequest(queue chan Request, worknumber int, done chan bool) {
 	for {
@@ -160,20 +161,20 @@ func doRequest(queue chan Request, worknumber int, done chan bool) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		_, err = http.Post(INGRESS, "application/json", bytes.NewBuffer(req))
+		resp, err := http.Post(INGRESS, "application/json", bytes.NewBuffer(req))
 		request_number++
 		if err != nil {
 			fmt.Println(err)
 		}
 		// Read the response body
-		/* body, err := ioutil.ReadAll(resp.Body)
+		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Println(err)
 		}
 		fmt.Println("STATUS:", resp.Status)
-		fmt.Println("response Headers:", resp.Header)
+		// fmt.Println("response Headers:", resp.Header)
 		fmt.Println("response Body:", string(body))
-		fmt.Println() */
+		fmt.Println()
 		done <- true
 	}
 }

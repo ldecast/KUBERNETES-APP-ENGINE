@@ -13,7 +13,7 @@ function Homepage() {
   const [isLoaded, setLoaded] = useState(false);
 
   const getData = () => {
-    fetch(process.env.REACT_APP_API_URL_HOME)
+    fetch(process.env.REACT_APP_API_URL + "/home")
       .then(response => response.json())
       .then(data => {
         // console.log(data);

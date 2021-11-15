@@ -17,7 +17,7 @@ function Redis() {
     });
 
     const getReports = async () => {
-        fetch(process.env.REACT_APP_API_URL_REDIS)
+        fetch(process.env.REACT_APP_API_URL + "/redisReports")
             .then(response => response.json())
             .then(data => {
                 // console.log(data);
