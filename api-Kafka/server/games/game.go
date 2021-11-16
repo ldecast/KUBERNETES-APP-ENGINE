@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"os"
 	kafkaproducer "server/kafka"
 	"strconv"
+	"strings"
 	"sync/atomic"
 )
 
@@ -22,11 +24,12 @@ type Log struct {
 	Worker         string `json:"worker"`
 }
 
-var brokers = [...]string{""}
+var (
+	brokers = os.Getenv("KAFKA_BROKERS")
+	topic   = "first_kafka_topic"
+)
 
-const topic = "first_kafka_topic"
-
-func publish(msg Log, publisher kafkaproducer.Publisher) error {
+func publish(msg Log) error {
 	if err := publisher.Publish(context.Background(), msg); err != nil {
 		fmt.Println(err)
 		return err
@@ -56,7 +59,7 @@ func RandomPlayer(players int) (string, string) {
 
 var request_number int64 = 0
 
-var publisher = kafkaproducer.NewPublisher(brokers[:], topic)
+var publisher = kafkaproducer.NewPublisher(strings.Split(brokers, ","), topic)
 
 func (s *Server) Play(ctx context.Context, in *ServerRequest) (*ServerResponse, error) {
 	game := in.Request
@@ -84,7 +87,7 @@ func (s *Server) Play(ctx context.Context, in *ServerRequest) (*ServerResponse, 
 	}
 
 	/* Publicar en Kafka */
-	err := publish(l, publisher)
+	err := publish(l)
 	if err != nil {
 		return &ServerResponse{Status: "[ERR - 400]"}, nil
 	}

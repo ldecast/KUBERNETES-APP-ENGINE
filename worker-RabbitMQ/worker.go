@@ -15,11 +15,12 @@ import (
 const queue_name = "RABBITMQ_QUEUE"
 
 // "amqp://guest:guest@localhost:5672/rabbit"
+// amqp://guest:guest@" + rabbitmq_address + "/
 var rabbitmq_address string
 
 func subscribe(col *mongo.Collection, redisClient *redis.Client, ctx context.Context) error {
 	/* Suscribirse a RabbitMQ */
-	rabbit_connection, err := amqp.Dial("amqp://guest:guest@" + rabbitmq_address + "/")
+	rabbit_connection, err := amqp.Dial("amqps://mpjdgrcv:tXyEmusyeoU46UNHXuy7Jd-m8lNTq_UU@roedeer.rmq.cloudamqp.com/mpjdgrcv")
 	if err != nil {
 		fmt.Println("Failed Initializing RabbitMQ Broker Connection")
 		return err
@@ -79,8 +80,8 @@ func main() {
 
 	rabbitmq_address = os.Getenv("rabbitmq_address")
 	if rabbitmq_address == "" {
-		// rabbitmq_address = "34.71.236.62:5672"
-		log.Fatal("rabbitmq_address is not defined as environment variable")
+		rabbitmq_address = "34.71.236.62:5672"
+		//log.Fatal("rabbitmq_address is not defined as environment variable")
 	}
 
 	ctx := context.Background()

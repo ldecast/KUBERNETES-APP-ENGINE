@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"os"
@@ -151,7 +150,7 @@ func generateTraffic() {
 }
 
 // const INGRESS = "http://localhost:10000/play"
-const INGRESS = "http://35.188.110.226.nip.io/"
+const INGRESS = "http://34.121.28.84.nip.io/"
 
 func doRequest(queue chan Request, worknumber int, done chan bool) {
 	for {
@@ -167,14 +166,14 @@ func doRequest(queue chan Request, worknumber int, done chan bool) {
 			fmt.Println(err)
 		}
 		// Read the response body
-		body, err := ioutil.ReadAll(resp.Body)
+		/* body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Println(err)
-		}
-		fmt.Println("STATUS:", resp.Status)
+		} */
+		fmt.Println("Response from gRPC server:", resp.Status)
 		// fmt.Println("response Headers:", resp.Header)
-		fmt.Println("response Body:", string(body))
-		fmt.Println()
+		// fmt.Println("response Body:", string(body))
+		// fmt.Println()
 		done <- true
 	}
 }

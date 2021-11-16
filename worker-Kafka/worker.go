@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 	kafkaconsumer "worker/kafka"
 
@@ -14,9 +13,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-const (
+var (
 	// host    = os.Getenv("HOST")
-	brokers = ""
+	brokers = []string{"localhost:9092"}
 	topic   = "first_kafka_topic"
 )
 
@@ -24,7 +23,7 @@ func subscribe(col *mongo.Collection, redisClient *redis.Client, ctx context.Con
 	/* Suscribirse a Kafka */
 	chMsg := make(chan kafkaconsumer.Log)
 	chErr := make(chan error)
-	consumer := kafkaconsumer.NewConsumer(strings.Split(brokers, ","), topic)
+	consumer := kafkaconsumer.NewConsumer(brokers, topic)
 
 	go func() {
 		consumer.Read(context.Background(), chMsg, chErr)
